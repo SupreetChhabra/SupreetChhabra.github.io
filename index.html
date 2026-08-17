@@ -339,5 +339,303 @@
   </footer>
 
   <script src="script.js"></script>
+
+  <!-- AI Assistant -->
+  <div id="assistant" class="assistant-hidden">
+    <div class="assistant-container">
+      <div class="assistant-header">
+        <div class="assistant-avatar">
+          <i class="fas fa-brain"></i>
+        </div>
+        <div class="assistant-title">
+          <h2>Supreet's Assistant</h2>
+          <p>AI-powered skills evaluator</p>
+        </div>
+        <button class="assistant-close" aria-label="Close assistant">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="assistant-messages" id="assistant-messages">
+        <!-- Messages will be populated here -->
+      </div>
+      <div class="assistant-input-area">
+        <input type="text" id="assistant-input" placeholder="Ask about Supreet's skills...">
+        <button id="assistant-send" aria-label="Send message">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <button id="assistant-toggle" class="assistant-toggle" aria-label="Toggle assistant">
+    <i class="fas fa-comments"></i>
+  </button>
+
+  <script>
+    // AI Assistant Data - Embedded portfolio knowledge
+    const assistantData = {
+      name: "Supreet Chhabra",
+      role: "AI Engineer",
+      skills: {
+        python: { level: "95%", category: "AI & Machine Learning", relativeStrength: "high" },
+        machineLearning: { level: "90%", category: "AI & Machine Learning", relativeStrength: "high" },
+        deepLearning: { level: "85%", category: "AI & Machine Learning", relativeStrength: "high" },
+        computerVision: { level: "85%", category: "AI & Machine Learning", relativeStrength: "high" },
+        tensorflow: { level: "85%", category: "ML & Data", relativeStrength: "high" },
+        pytorch: { level: "80%", category: "ML & Data", relativeStrength: "high" },
+        javaScript: { level: "80%", category: "Programming & Tools", relativeStrength: "medium" },
+        javaSpring: { level: "75%", category: "Programming & Tools", relativeStrength: "medium" },
+        gitGithub: { level: "90%", category: "Programming & Tools", relativeStrength: "high" },
+        docker: { level: "60%", category: "Programming & Tools", relativeStrength: "medium" },
+        numpyPandas: { level: "90%", category: "ML & Data", relativeStrength: "high" }
+      },
+      projects: [
+        { name: "ai-software-engineering-agent", description: "AI agent for software engineering tasks - code generation, analysis, and automation tools built with Python and machine learning", tags: ["Python", "AI", "Automation"] },
+        { name: "ChatAI", description: "Conversational AI chatbot interface built with modern web technologies, featuring natural language processing capabilities", tags: ["JavaScript", "AI", "Chat"] },
+        { name: "SpringBootWebTodoApp", description: "Full-stack todo application built with Spring Boot, Java, and REST APIs", tags: ["Java", "Spring Boot", "REST API"] },
+        { name: "React-CounterApp", description: "Simple React.js counter application demonstrating component state, props, and modern frontend development patterns", tags: ["React", "JavaScript", "State Mgmt"] }
+      ],
+      experience: "Passionate AI Engineer with experience in building intelligent systems, machine learning models, and AI-powered applications. Currently working on AI software engineering agents and intelligent chat systems.",
+      contact: "supreetchhabra@example.com"
+    };
+
+    // AI Response Generator
+    const AIAssistant = {
+      // Initialize the assistant
+      init: function() {
+        this.messages = [];
+        this.renderInitialMessage();
+        this.bindEvents();
+      },
+
+      // Render initial greeting message
+      renderInitialMessage: function() {
+        const messagesContainer = document.getElementById('assistant-messages');
+        const greeting = this.getGreeting();
+        this.addMessage(greeting, 'assistant');
+      },
+
+      // Get greeting based on time of day
+      getGreeting: function() {
+        const hour = new Date().getHours();
+        if (hour < 12) {
+          return "Good morning! I'm Supreet's AI assistant. Ask me about his skills and experience.";
+        } else if (hour < 18) {
+          return "Good afternoon! I'm Supreet's AI assistant. Ask me about his skills and experience.";
+        } else {
+          return "Good evening! I'm Supreet's AI assistant. Ask me about his skills and experience.";
+        }
+      },
+
+      // Bind event listeners
+      bindEvents: function() {
+        const sendBtn = document.getElementById('assistant-send');
+        const input = document.getElementById('assistant-input');
+
+        sendBtn.addEventListener('click', () => this.processInput());
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && input.value.trim()) {
+            this.processInput();
+          }
+        });
+      },
+
+      // Process user input
+      processInput: function() {
+        const input = document.getElementById('assistant-input');
+        const message = input.value.trim();
+        
+        if (!message) return;
+
+        this.addMessage(message, 'user');
+        input.value = '';
+
+        // Generate AI response
+        setTimeout(() => {
+          const response = this.generateResponse(message);
+          this.addMessage(response, 'assistant');
+        }, 500);
+      },
+
+      // Generate AI-like response based on user input
+      generateResponse: function(message) {
+        const lowerMsg = message.toLowerCase();
+        const name = assistantData.name;
+        const role = assistantData.role;
+
+        // Check for skill-related queries
+        if (lowerMsg.includes('skill') || lowerMsg.includes('ability') || lowerMsg.includes('capable')) {
+          return this.handleSkillQuery(lowerMsg);
+        }
+
+        // Check for project-related queries
+        if (lowerMsg.includes('project') || lowerMsg.includes('work')) {
+          return this.handleProjectQuery(lowerMsg);
+        }
+
+        // Check for specific skill queries
+        if (lowerMsg.includes('python')) return this.getSkillInfo('python');
+        if (lowerMsg.includes('javascript') || lowerMsg.includes('js')) return this.getSkillInfo('javaScript');
+        if (lowerMsg.includes('java')) return this.getSkillInfo('javaSpring');
+        if (lowerMsg.includes('machine learning') || lowerMsg.includes('ml')) return this.getSkillInfo('machineLearning');
+        if (lowerMsg.includes('deep learning')) return this.getSkillInfo('deepLearning');
+        if (lowerMsg.includes('computer vision')) return this.getSkillInfo('computerVision');
+        if (lowerMsg.includes('docker')) return this.getSkillInfo('docker');
+        if (lowerMsg.includes('tensorflow')) return this.getSkillInfo('tensorflow');
+        if (lowerMsg.includes('pytorch')) return this.getSkillInfo('pytorch');
+
+        // Check for relative strength queries
+        if (lowerMsg.includes('strong') || lowerMsg.includes('weak') || lowerMsg.includes('best')) {
+          return this.handleRelativeStrengthQuery();
+        }
+
+        // Default response
+        return this.getDefaultResponse();
+      },
+
+      // Handle skill queries
+      handleSkillQuery: function(lowerMsg) {
+        if (lowerMsg.includes('python')) return this.getSkillInfo('python');
+        if (lowerMsg.includes('javascript') || lowerMsg.includes('js')) return this.getSkillInfo('javaScript');
+        if (lowerMsg.includes('java')) return this.getSkillInfo('javaSpring');
+        if (lowerMsg.includes('machine learning') || lowerMsg.includes('ml')) return this.getSkillInfo('machineLearning');
+        if (lowerMsg.includes('deep learning')) return this.getSkillInfo('deepLearning');
+        if (lowerMsg.includes('computer vision')) return this.getSkillInfo('computerVision');
+        if (lowerMsg.includes('docker')) return this.getSkillInfo('docker');
+        if (lowerMsg.includes('git') || lowerMsg.includes('github')) return this.getSkillInfo('gitGithub');
+
+        // General skills overview
+        return `Supreet is an AI Engineer with expertise in various technologies. He has strong skills in Python (95%), Machine Learning (90%), and Deep Learning (85%). He's also proficient in JavaScript (80%), TensorFlow (85%), and PyTorch (80%). His relative strengths are in AI & Machine Learning categories, particularly in building intelligent systems and deploying scalable AI solutions. Would you like to know more about a specific skill?`;
+      },
+
+      // Handle project queries
+      handleProjectQuery: function(lowerMsg) {
+        if (lowerMsg.includes('ai-software-engineering-agent')) {
+          return `Supreet's "ai-software-engineering-agent" is an AI agent for software engineering tasks. It includes code generation, analysis, and automation tools built with Python and machine learning. This project demonstrates his ability to build intelligent systems that can assist with software development tasks.`;
+        }
+        if (lowerMsg.includes('chatai') || lowerMsg.includes('chat ai')) {
+          return `Supreet's "ChatAI" is a conversational AI chatbot interface built with modern web technologies. It features natural language processing capabilities and demonstrates his skills in JavaScript AI implementations and creating interactive chat systems.`;
+        }
+        if (lowerMsg.includes('spring') || lowerMsg.includes('todo')) {
+          return `Supreet's "SpringBootWebTodoApp" is a full-stack todo application built with Spring Boot, Java, and REST APIs. It demonstrates his backend development skills with Java and modern REST API practices.`;
+        }
+        if (lowerMsg.includes('react') || lowerMsg.includes('counter')) {
+          return `Supreet's "React-CounterApp" is a simple React.js counter application that demonstrates component state, props, and modern frontend development patterns. It shows his proficiency in JavaScript and React.`;
+        }
+
+        // General projects overview
+        return `Supreet has several AI and software projects. His notable projects include:
+        - ai-software-engineering-agent: AI agent for code generation and automation
+        - ChatAI: Conversational AI chatbot with NLP capabilities
+        - SpringBootWebTodoApp: Full-stack todo application with Spring Boot
+        - React-CounterApp: React component state demonstration
+
+        Each project showcases different aspects of his skills, from AI and machine learning to frontend development and backend engineering.`;
+      },
+
+      // Get skill information
+      getSkillInfo: function(skillKey) {
+        const skill = assistantData.skills[skillKey];
+        if (!skill) return "I'm not sure about that specific skill. Would you like to know about Supreet's other abilities?";
+
+        const strengthLabels = {
+          high: "strong relative strength",
+          medium: "moderate skill level",
+          low: "developing skill"
+        };
+
+        return `${skillKey.charAt(0).toUpperCase() + skillKey.slice(1)} is one of ${name}'s ${skill.level} proficiency skills. He has ${strengthLabels[skill.relativeStrength]} in ${skill.category.toLowerCase()}. ${name} specializes in building intelligent systems and AI-powered applications using these technologies.`;
+      },
+
+      // Handle relative strength queries
+      handleRelativeStrengthQuery: function() {
+        const highSkills = [];
+        const mediumSkills = [];
+
+        for (const [key, skill] of Object.entries(assistantData.skills)) {
+          if (skill.relativeStrength === 'high') {
+            highSkills.push(`${key.charAt(0).toUpperCase() + key.slice(1)}`);
+          } else if (skill.relativeStrength === 'medium') {
+            mediumSkills.push(`${key.charAt(0).toUpperCase() + key.slice(1)}`);
+          }
+        }
+
+        let response = `Based on Supreet's portfolio, his skills with relative strength include:\n\n`;
+
+        if (highSkills.length > 0) {
+          response += `**High relative strength:** ${highSkills.join(', ')}\n\n`;
+        }
+
+        if (mediumSkills.length > 0) {
+          response += `**Medium relative strength:** ${mediumSkills.join(', ')}\n\n`;
+        }
+
+        response += `\n${name}'s highest relative strengths are in AI & Machine Learning categories, particularly Python, Machine Learning, and Deep Learning. His programming skills in JavaScript, Java & Spring Boot, and Git & GitHub also show good proficiency.`;
+
+        return response;
+      },
+
+      // Get default response
+      getDefaultResponse: function() {
+        return `I'm Supreet's AI assistant! I can help you learn about ${assistantData.name}, an ${assistantData.role}. 
+
+Ask me about:
+- His skills and expertise
+- His projects and experience
+- His relative strengths and abilities
+- His contact information
+
+What would you like to know?`;
+      },
+
+      // Add message to the chat
+      addMessage: function(text, type) {
+        const messagesContainer = document.getElementById('assistant-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}-message`;
+        messageDiv.innerHTML = `<p>${this.escapeHtml(text)}</p>`;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      },
+
+      // Escape HTML special characters
+      escapeHtml: function(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    };
+
+    // Initialize assistant when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      AIAssistant.init();
+
+      // Toggle assistant
+      const toggleBtn = document.getElementById('assistant-toggle');
+      const assistant = document.getElementById('assistant');
+
+      toggleBtn.addEventListener('click', () => {
+        assistant.classList.toggle('assistant-hidden');
+        if (!assistant.classList.contains('assistant-hidden')) {
+          assistant.classList.add('assistant-visible');
+        } else {
+          assistant.classList.remove('assistant-visible');
+        }
+      });
+
+      // Close assistant
+      const closeBtn = assistant.querySelector('.assistant-close');
+      closeBtn.addEventListener('click', () => {
+        assistant.classList.add('assistant-hidden');
+      });
+
+      // Close on outside click
+      assistant.addEventListener('click', (e) => {
+        if (e.target === assistant) {
+          assistant.classList.add('assistant-hidden');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
