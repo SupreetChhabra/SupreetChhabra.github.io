@@ -719,13 +719,21 @@ img {
 }
 
 /* AI Assistant */
+#assistant {
+  position: fixed;
+  bottom: 5rem;
+  right: 2rem;
+  z-index: 1002;
+  width: 400px;
+  max-width: calc(100vw - 2rem);
+}
+
 .assistant-hidden {
   display: none;
 }
 
 .assistant-container {
   width: 100%;
-  max-width: 400px;
   background: var(--card-bg);
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -897,8 +905,12 @@ img {
 }
 
 @media (max-width: 768px) {
-  .assistant-container {
-    max-width: 90%;
+  #assistant {
+    bottom: 4.5rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+    max-width: none;
   }
   
   .assistant-messages {
