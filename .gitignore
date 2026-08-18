@@ -1,0 +1,23 @@
+# Resume / CV documents - keep personal resume out of version control
+*.docx
+*.doc
+*.pdf
+Resume_Supreet.docx
+resume*.docx
+resume*.doc
+resume*.pdf
+CV*.docx
+CV*.doc
+CV*.pdf
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

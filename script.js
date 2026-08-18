@@ -150,14 +150,21 @@ document.addEventListener('DOMContentLoaded', function() {
   
   window.addEventListener('scroll', activeNavLink);
   
-  // Counter animation for stats (if needed)
+  // Counter animation for stats (skips non-numeric values like CLSA)
   const statNumbers = document.querySelectorAll('.stat-number');
-  
+
   const counterObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const target = entry.target;
-        const countTo = parseInt(target.textContent);
+        const countTo = parseInt(target.textContent, 10);
+        
+        // Skip non-numeric stats (e.g., "CLSA")
+        if (isNaN(countTo)) {
+          counterObserver.unobserve(target);
+          return;
+        }
+        
         let current = 0;
         const increment = countTo / 50;
         const duration = 2000;
@@ -181,6 +188,41 @@ document.addEventListener('DOMContentLoaded', function() {
   statNumbers.forEach(el => {
     counterObserver.observe(el);
   });
+  
+  // Contact form submission - opens email client with pre-filled message
+  const contactForm = document.querySelector('.contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = this.querySelector('input[type="text"]').value.trim();
+      const email = this.querySelector('input[type="email"]').value.trim();
+      const message = this.querySelector('textarea').value.trim();
+      
+      if (!name || !email || !message) {
+        alert('Please fill in all fields before sending.');
+        return;
+      }
+      
+      const subject = encodeURIComponent(`Portfolio Contact from ${name}`);
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+      const mailtoLink = `mailto:chhabrasupreet@gmail.com?subject=${subject}&body=${body}`;
+      
+      window.location.href = mailtoLink;
+      
+      // Show feedback
+      const submitBtn = this.querySelector('.submit-btn');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-check"></i> Opening Email...';
+      submitBtn.disabled = true;
+      
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        this.reset();
+      }, 3000);
+    });
+  }
   
   // Mobile menu toggle (if needed for smaller screens)
   const createMobileMenu = () => {
